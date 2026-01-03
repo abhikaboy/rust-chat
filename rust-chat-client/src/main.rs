@@ -33,7 +33,7 @@ async fn main() {
             let data_bytes = message.unwrap().into_data(); // convert from message into byte array
             match serde_json::from_slice::<ChatMessage>(&data_bytes) {
                 Ok(msg) => println!("{}",&msg.format()),
-                Error => println!("error~")
+                Error => println!("Error converting web socket into Chat Message")
             }
         })
     };
@@ -43,6 +43,7 @@ async fn main() {
 }
 
 async fn read_name() -> String {
+    print!("Please enter your display name: ");
     let mut stdin = tokio::io::stdin();
     let mut buf = vec![0; 1024];
     let bytes_read = match stdin.read(&mut buf).await { // writes to buffer and returns the # of bytes read
