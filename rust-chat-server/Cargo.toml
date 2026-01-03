@@ -7,3 +7,5 @@ edition = "2024"
 warp = "0.3"
 tokio = { version = "1", features = ["full"] }
 futures-util = "0.3"
+serde = "1.0.228"
+serde_json = "1.0.148"

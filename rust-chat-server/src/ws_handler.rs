@@ -2,6 +2,9 @@ use warp::filters::ws::{Message, WebSocket};
 use std::sync::{Arc, Mutex};
 use tokio::sync::broadcast;
 use futures_util::{StreamExt,SinkExt};
+use crate::types::ChatMessage;
+use serde::{Deserialize, Serialize};
+use serde_json;
 
 pub async fn handle_connection(ws: WebSocket, tx: Arc<Mutex<broadcast::Sender<String>>>) {
     println!("New WebSocket connection established!");
@@ -10,8 +13,17 @@ pub async fn handle_connection(ws: WebSocket, tx: Arc<Mutex<broadcast::Sender<St
     tokio::spawn(async move {
         while let Ok(msg) = reciever.recv().await {
             println!("Broadcasting: {}", msg);
-            if ws_sender.send(Message::text(msg)).await.is_err(){
-                break;
+            // construct a chat message from the json
+            match serde_json::from_str::<ChatMessage>(&msg) {
+                Ok(chat_msg) => {
+                    if ws_sender.send(Message::text(&chat_msg.format())).await.is_err(){
+                        break;
+                    }
+                }
+                Err(e) => {
+                    println!("Error: Invalid Message Format");
+                    println!("Send error back to client...?");
+                }
             }
         }
     });
