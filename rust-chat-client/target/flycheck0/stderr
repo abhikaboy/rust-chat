@@ -1438,3 +1438,103 @@ Stack backtrace:
   21: std::rt::lang_start_internal
   22: _main
    0.101099042s  INFO prepare_target{force=false package_id=utf-8 v0.7.6 target="utf8"}: cargo::core::compiler::fingerprint: fingerprint error for utf-8 v0.7.6/Check { test: false }/TargetInner { tested: false, benched: false, ..: lib_target("utf8", ["lib"], "/Users/abhikray/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/utf-8-0.7.6/src/lib.rs", Edition2015) }
+   0.101102542s  INFO prepare_target{force=false package_id=utf-8 v0.7.6 target="utf8"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/abhikray/Documents/rust-chat/rust-chat-client/target/debug/.fingerprint/utf-8-9c7efe879396a28a/lib-utf8`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: std::backtrace::Backtrace::capture
+   2: cargo_util::paths::read_bytes
+   3: cargo_util::paths::read
+   4: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   5: cargo::core::compiler::fingerprint::prepare_target
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: cargo::core::compiler::compile
+  10: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  11: cargo::ops::cargo_compile::compile_ws
+  12: cargo::ops::cargo_compile::compile_with_exec
+  13: cargo::ops::cargo_compile::compile
+  14: cargo::commands::check::exec
+  15: <cargo::cli::Exec>::exec
+  16: cargo::main
+  17: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  18: std::rt::lang_start::<()>::{closure#0}
+  19: std::rt::lang_start_internal
+  20: _main
+   0.101214750s  INFO prepare_target{force=false package_id=rust-chat-client v0.1.0 (/Users/abhikray/Documents/rust-chat/rust-chat-client) target="rust-chat-client"}: cargo::core::compiler::fingerprint: fingerprint error for rust-chat-client v0.1.0 (/Users/abhikray/Documents/rust-chat/rust-chat-client)/Check { test: true }/TargetInner { name: "rust-chat-client", doc: true, ..: with_path("/Users/abhikray/Documents/rust-chat/rust-chat-client/src/main.rs", Edition2024) }
+   0.101219250s  INFO prepare_target{force=false package_id=rust-chat-client v0.1.0 (/Users/abhikray/Documents/rust-chat/rust-chat-client) target="rust-chat-client"}: cargo::core::compiler::fingerprint:     err: failed to read `/Users/abhikray/Documents/rust-chat/rust-chat-client/target/debug/.fingerprint/rust-chat-client-f6462dedf3932f9f/test-bin-rust-chat-client`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: std::backtrace::Backtrace::create
+   1: std::backtrace::Backtrace::capture
+   2: cargo_util::paths::read_bytes
+   3: cargo_util::paths::read
+   4: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   5: cargo::core::compiler::fingerprint::prepare_target
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: std::rt::lang_start_internal
+  17: _main
+   Compiling syn v2.0.112
+    Checking zerocopy v0.8.31
+    Checking serde_core v1.0.228
+   Compiling httparse v1.10.1
+   Compiling thiserror v1.0.69
+    Checking http v1.4.0
+    Checking mio v1.1.1
+    Checking utf-8 v0.7.6
+    Checking data-encoding v2.9.0
+    Checking futures-sink v0.3.31
+    Checking log v0.4.29
+    Checking byteorder v1.5.0
+    Checking futures-task v0.3.31
+    Checking slab v0.4.11
+    Checking futures-channel v0.3.31
+    Checking ppv-lite86 v0.2.21
+    Checking rand_chacha v0.3.1
+    Checking rand v0.8.5
+   Compiling synstructure v0.13.2
+   Compiling zerofrom-derive v0.1.6
+   Compiling yoke-derive v0.8.1
+   Compiling zerovec-derive v0.11.2
+   Compiling displaydoc v0.2.5
+   Compiling serde_derive v1.0.228
+   Compiling thiserror-impl v1.0.69
+   Compiling tokio-macros v2.6.0
+   Compiling futures-macro v0.3.31
+    Checking tokio v1.48.0
+    Checking futures-util v0.3.31
+    Checking zerofrom v0.1.6
+    Checking yoke v0.8.1
+    Checking zerovec v0.11.5
+    Checking zerotrie v0.2.3
+    Checking serde v1.0.228
+    Checking tinystr v0.8.2
+    Checking potential_utf v0.1.4
+    Checking icu_collections v2.1.1
+    Checking icu_locale_core v2.1.1
+    Checking icu_provider v2.1.1
+    Checking icu_properties v2.1.2
+    Checking icu_normalizer v2.1.1
+    Checking idna_adapter v1.2.1
+    Checking idna v1.1.0
+    Checking url v2.5.7
+    Checking tungstenite v0.21.0
+    Checking tokio-tungstenite v0.21.0
+    Checking rust-chat-client v0.1.0 (/Users/abhikray/Documents/rust-chat/rust-chat-client)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 13.05s
