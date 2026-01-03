@@ -17,7 +17,7 @@ async fn main() {
     let name : String = read_name().await;
 
     let (stdin_tx, stdin_rx) = futures_channel::mpsc::unbounded();
-    tokio::spawn(read_stdin(stdin_tx, &name));
+    tokio::spawn(read_stdin(stdin_tx, name.clone())); // this process can outlive main, so it needs to be cloned
 
     let (ws_stream, _) = connect_async(url).await.expect("Failed to connect");
     println!("WebSocket handshake has been successfully completed");
@@ -56,7 +56,7 @@ async fn read_name() -> String {
     }
 }
 
-async fn read_stdin(tx: futures_channel::mpsc::UnboundedSender<Message>, name: &String) {
+async fn read_stdin(tx: futures_channel::mpsc::UnboundedSender<Message>, name: String) {
     let mut stdin = tokio::io::stdin();
     let mut stdout = tokio::io::stdout();
     loop {
