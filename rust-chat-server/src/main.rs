@@ -15,7 +15,9 @@ async fn main() {
             let tx = tx_ws.clone();
             ws.on_upgrade(move |websocket| ws_handler::handle_connection(websocket, tx))
         });
+    println!("Running Websocket Server!");
     warp::serve(ws_route)
         .run(([127, 0, 0, 1], 8080))
         .await;
+    println!("Shutting Down...")
 }

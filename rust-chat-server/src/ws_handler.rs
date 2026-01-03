@@ -17,6 +17,7 @@ pub async fn handle_connection(ws: WebSocket, tx: Arc<Mutex<broadcast::Sender<St
         match result {
             Ok(message) => {
                 if let Ok(text) = message.to_str() {
+                    println!("Recieved Message: {}", text.to_string());
                     tx.lock().unwrap().send(text.to_string()).expect("Failed to broadcast message");
                 }
             },
