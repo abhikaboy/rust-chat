@@ -1,6 +1,7 @@
 use futures_util::{future, pin_mut, StreamExt};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio_tungstenite::{connect_async, tungstenite::protocol::Message};
+use futures_channel::mpsc::UnboundedReceiver;
 
 #[tokio::main]
 async fn main() {
@@ -30,13 +31,19 @@ async fn main() {
 
 async fn read_stdin(tx: futures_channel::mpsc::UnboundedSender<Message>) {
     let mut stdin = tokio::io::stdin();
+    let mut stdout = tokio::io::stdout();
     loop {
+        stdout.write_all(b"> ").await.unwrap();
+        stdout.flush().await.unwrap();
+
         let mut buf = vec![0; 1024];
         let n = match stdin.read(&mut buf).await {
             Err(_) | Ok(0) => break,
             Ok(n) => n,
         };
         buf.truncate(n); // so buffer only is as big as the message ("hi" wont take 1kb)
-        tx.unbounded_send(Message::binary(buf)).unwrap();
+        if let Ok(text) = String::from_utf8(buf) {
+            tx.unbounded_send(Message::text(text)).unwrap();
+        }
     }
 }

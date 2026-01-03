@@ -4,16 +4,19 @@ use tokio::sync::broadcast;
 use futures_util::{StreamExt,SinkExt};
 
 pub async fn handle_connection(ws: WebSocket, tx: Arc<Mutex<broadcast::Sender<String>>>) {
+    println!("New WebSocket connection established!");
     let (mut ws_sender, mut ws_reciever) = ws.split();
     let mut reciever = tx.lock().unwrap().subscribe();
     tokio::spawn(async move {
         while let Ok(msg) = reciever.recv().await {
+            println!("Broadcasting: {}", msg);
             if ws_sender.send(Message::text(msg)).await.is_err(){
                 break;
             }
         }
     });
     while let Some(result) = ws_reciever.next().await {
+        println!("Received something from client: {:?}", result);
         match result {
             Ok(message) => {
                 if let Ok(text) = message.to_str() {
@@ -21,8 +24,11 @@ pub async fn handle_connection(ws: WebSocket, tx: Arc<Mutex<broadcast::Sender<St
                     tx.lock().unwrap().send(text.to_string()).expect("Failed to broadcast message");
                 }
             },
-            Err(e) => break,
+            Err(e) => {
+                eprintln!("{e}");
+                break
+            },
         }
     }
-
+    println!("WebSocket connection closed");
 }
