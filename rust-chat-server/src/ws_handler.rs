@@ -16,7 +16,8 @@ pub async fn handle_connection(ws: WebSocket, tx: Arc<Mutex<broadcast::Sender<St
             // construct a chat message from the json
             match serde_json::from_str::<ChatMessage>(&msg) {
                 Ok(chat_msg) => {
-                    if ws_sender.send(Message::text(&chat_msg.format())).await.is_err(){
+                    let json = serde_json::to_string(&chat_msg).unwrap();
+                    if ws_sender.send(Message::text(&json)).await.is_err(){
                         break;
                     }
                 }

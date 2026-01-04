@@ -17,11 +17,11 @@ async fn main() {
     let name : String = read_name().await;
 
     let (stdin_tx, stdin_rx) = futures_channel::mpsc::unbounded();
-    tokio::spawn(read_stdin(stdin_tx, name.clone())); // this process can outlive main, so it needs to be cloned
 
     let (ws_stream, _) = connect_async(url).await.expect("Failed to connect");
     println!("WebSocket handshake has been successfully completed");
 
+    tokio::spawn(read_stdin(stdin_tx, name.clone())); // this process can outlive main, so it needs to be cloned
 
     let (sink, read) = ws_stream.split();
 
@@ -33,7 +33,7 @@ async fn main() {
             let data_bytes = message.unwrap().into_data(); // convert from message into byte array
             match serde_json::from_slice::<ChatMessage>(&data_bytes) {
                 Ok(msg) => println!("{}",&msg.format()),
-                Error => println!("Error converting web socket into Chat Message")
+                Err(e) => println!("Error converting an incoming web socket into Chat Message '{}'",e)
             }
         })
     };
@@ -43,7 +43,10 @@ async fn main() {
 }
 
 async fn read_name() -> String {
-    print!("Please enter your display name: ");
+    let mut stdout = tokio::io::stdout();
+    stdout.write_all(b"Please enter your display name: ").await.unwrap();
+    stdout.flush().await.unwrap();  // ✓ Forces output immediately
+
     let mut stdin = tokio::io::stdin();
     let mut buf = vec![0; 1024];
     let bytes_read = match stdin.read(&mut buf).await { // writes to buffer and returns the # of bytes read
@@ -52,7 +55,7 @@ async fn read_name() -> String {
     };
     buf.truncate(bytes_read);
     match String::from_utf8(buf) {
-        Ok(name) => name,
+        Ok(name) => name.trim().to_string(),
         Err(err) => String::from("Anonymous"), // Fallback
     }
 }
@@ -61,7 +64,7 @@ async fn read_stdin(tx: futures_channel::mpsc::UnboundedSender<Message>, name: S
     let mut stdin = tokio::io::stdin();
     let mut stdout = tokio::io::stdout();
     loop {
-        stdout.write_all(b"> ").await.unwrap();
+        // stdout.write_all(b"> ").await.unwrap();
         stdout.flush().await.unwrap();
 
         let mut buf = vec![0; 1024];
@@ -72,7 +75,7 @@ async fn read_stdin(tx: futures_channel::mpsc::UnboundedSender<Message>, name: S
         buf.truncate(n); // so buffer only is as big as the message ("hi" wont take 1kb)
         if let Ok(text) = String::from_utf8(buf) {
             // build a chat message and then send that
-            let msg =  ChatMessage::new(text, &name);
+            let msg =  ChatMessage::new(text.trim().to_string(), name.clone());
             tx.unbounded_send(Message::text(serde_json::to_string(&msg).unwrap())).unwrap();
         }
     }
